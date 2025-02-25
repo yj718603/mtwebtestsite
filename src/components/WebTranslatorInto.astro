@@ -1,0 +1,402 @@
+---
+import textTranslatorBg from "../assets/textTranslatorBg.svg";
+import webTitle from "../assets/images/webTranslatorTitle.png";
+
+import exampleZH from "../assets/images/exampleZH.png";
+import vectorHorizontal from "../assets/vectorHorizontal.svg";
+import vectorHorizontalWhite from "../assets/vectorHorizontalWhite.svg";
+import iconGroup from "../assets/iconGroup.svg";
+---
+
+<div class="sectionContainer">
+    <div class="title">
+        <img src={webTitle.src} alt="" class="textTitle" />
+    </div>
+
+    <div class="introContent">
+        <p>
+            安装mTranslator浏览器插件后，您只需一键即可翻译整个网页。<br />
+            无论是外文资讯、技术文档还是多语言电商页面，插件会根据网页内容和用户需求，自动优化翻译效果，<br />
+            并支持双语对照模式，帮助用户快速掌握信息。
+        </p>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="pane1">
+            <div class="diff-container">
+                <div class="diff-item diff-item-1">
+                    <img alt="original" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
+                </div>
+                <div class="diff-item diff-item-2">
+                    <img
+                        alt="blurred"
+                        src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+                    />
+                </div>
+                <div class="diff-resizer"></div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="pane2">
+            <div class="diff-container">
+                <div class="diff-item diff-item-1">
+                    <img alt="original" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
+                </div>
+                <div class="diff-item diff-item-2">
+                    <img
+                        alt="blurred"
+                        src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+                    />
+                </div>
+                <div class="diff-resizer"></div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="pane3">
+            <div class="diff-container">
+                <div class="diff-item diff-item-1">
+                    <img alt="original" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
+                </div>
+                <div class="diff-item diff-item-2">
+                    <img
+                        alt="blurred"
+                        src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+                    />
+                </div>
+                <div class="diff-resizer"></div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="pane4">
+            <div class="diff-container">
+                <div class="diff-item diff-item-1">
+                    <img
+                        alt="blurred"
+                        src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+                    />
+                </div>
+                <div class="diff-item diff-item-2">
+                    <img alt="original" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
+                </div>
+                <div class="diff-resizer"></div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="pane5">
+            <div class="diff-container">
+                <div class="diff-item diff-item-1">
+                    <img
+                        alt="blurred"
+                        src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
+                    />
+                </div>
+                <div class="diff-item diff-item-2">
+                    <img alt="original" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
+                </div>
+                <div class="diff-resizer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="webTranslatorNavbar tabs">
+        <button class="nav-section tab-btn active" data-paneid="pane1">
+            <span>英语</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>简体中文</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane2">
+            <span>英语</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>简体中文</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane3">
+            <span>英语</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>中文</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane4">
+            <span>英语</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>中文</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane5">
+            <span>繁体中文</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>中文</span>
+        </button>
+    </div>
+
+    <div class="text-section">
+        <h2 class="color-font">mTranslator</h2>
+        <h2>一键翻译各大网站内容</h2>
+    </div>
+    <div class="fullsizeLink">
+        <a href="">立即开始</a>
+    </div>
+    <div class="webTransBottom">
+        <img src={iconGroup.src} alt="" />
+    </div>
+</div>
+
+<style>
+    .webTranslatorNavbar {
+        height: 56px;
+        background: #e8e8ed;
+        border-radius: 100px 100px 100px 100px;
+        margin-top: 50px;
+        text-transform: none;
+        font-weight: 400;
+    }
+    .tab-content {
+        display: flex;
+        justify-content: space-around;
+    }
+    .nav-section {
+        margin: 0;
+        width: 166px;
+        height: 100%;
+        background: rgba(232, 232, 237, 1);
+        border-radius: 999px 999px 999px 999px;
+        border: none;
+        color: #333333;
+        display: inline-block;
+        text-align: center;
+        align-content: center;
+        font-size: 1rem;
+    }
+    .nav-section:hover {
+        background: #d4d4d8;
+    }
+    .icon-arrow-left2,
+    .icon-arrow-right2 {
+        font-size: 0.65rem;
+    }
+    .tab-pane {
+        display: none;
+    }
+    .tab-pane.active {
+        display: block;
+    }
+    .nav-section.active {
+        color: #ffffff;
+        background: #1d1d1f;
+    }
+    .text-section {
+        margin-top: 103px;
+        line-height: 54px;
+    }
+    .text-section h2 {
+        font-weight: normal;
+        font-size: 2.25rem;
+        line-height: 3.375rem;
+        text-align: center;
+        font-style: normal;
+        text-transform: none;
+        margin: 0;
+    }
+    .text-section .color-font {
+        font-weight: bold;
+        color: #7c3aed;
+        background: linear-gradient(147.27114018726542deg, #7c3aed 0%, #f4439f 100%);
+        -webkit-background-clip: text; /* 让背景只裁剪到文字部分 */
+        -webkit-text-fill-color: transparent; /* 设置文字颜色为透明 */
+    }
+
+    .textTranslatorbg {
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+    }
+    .icon-vectorHorizontal {
+        font-size: 0.5rem;
+        color: #333333;
+    }
+    .webTransBottom {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        background: linear-gradient(to top, rgba(124, 58, 237, 0.2) 0%, rgba(124, 58, 237, 0) 100%);
+    }
+
+    /* 下面是tab图片滑块拖拽效果*/
+    /* 容器 */
+    .tab-pane {
+        position: relative;
+        width: 1200px; /* 可调整 */
+        aspect-ratio: 16 / 9;
+    }
+    .diff-container {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0px 0px 60px 0px rgba(124, 58, 237, 0.4);
+        margin-top: 33px;
+    }
+
+    /* 底层图片（始终完整显示） */
+    .diff-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .diff-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    /* 上层图片（不改变尺寸，仅裁剪显示区域） */
+    .diff-item-2 {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip-path: inset(0 50% 0 0); /* 初始显示左侧 50% */
+    }
+
+    /* 让图片始终铺满 */
+    .diff-item-2 img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 20px;
+    }
+
+    /* 滑块样式 */
+    .diff-resizer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: ew-resize;
+        transform: translate(-50%, -50%);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 左右箭头 */
+    .diff-resizer::before,
+    .diff-resizer::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        background: #7C3AE;
+        border: solid rgba(124, 58, 237, 1);
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+    }
+
+    .diff-resizer::before {
+        left: 8px;
+        transform: translateY(-50%) rotate(135deg);
+    }
+
+    .diff-resizer::after {
+        right: 8px;
+        transform: translateY(-50%) rotate(-45deg);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 查询所有的tabs选择按钮，当前页面应该有5个
+        const tabs: NodeListOf<HTMLButtonElement> = document.querySelectorAll(".tab-btn");
+
+        // 查询出所有的tabs的内容区域
+        const panes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".tab-pane");
+
+        const setupResizer = (activePane: HTMLDivElement) => {
+            const resizer = activePane.querySelector(".diff-resizer") as HTMLDivElement | null;
+            const diffItem2 = activePane.querySelector(".diff-item-2") as HTMLDivElement | null;
+            const container = activePane.querySelector(".diff-container") as HTMLDivElement | null;
+
+            if (!resizer || !diffItem2 || !container) return;
+
+            let isDragging = false;
+            diffItem2.style.clipPath = "inset(0 50% 0 0)";
+            resizer.style.left = "50%";
+
+            const getEventX = (event: MouseEvent | TouchEvent): number => {
+                return event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+            };
+
+            const startDragging = (event: MouseEvent | TouchEvent) => {
+                isDragging = true;
+                document.body.style.userSelect = "none";
+            };
+
+            const onDrag = (event: MouseEvent | TouchEvent) => {
+                if (!isDragging) return;
+
+                const rect = container.getBoundingClientRect();
+                const offsetX = getEventX(event) - rect.left;
+                const percentage = Math.max(0, Math.min(offsetX / rect.width, 1));
+
+                diffItem2.style.clipPath = `inset(0 ${100 - percentage * 100}% 0 0)`;
+                resizer.style.left = `${percentage * 100}%`;
+            };
+
+            const stopDragging = () => {
+                isDragging = false;
+                document.body.style.userSelect = "auto";
+            };
+
+            // **先移除之前的监听，防止重复绑定**
+            resizer.removeEventListener("mousedown", startDragging);
+            resizer.removeEventListener("touchstart", startDragging);
+            document.removeEventListener("mousemove", onDrag);
+            document.removeEventListener("touchmove", onDrag);
+            document.removeEventListener("mouseup", stopDragging);
+            document.removeEventListener("touchend", stopDragging);
+
+            // **重新绑定监听**
+            resizer.addEventListener("mousedown", startDragging);
+            resizer.addEventListener("touchstart", startDragging);
+            document.addEventListener("mousemove", onDrag);
+            document.addEventListener("touchmove", onDrag);
+            document.addEventListener("mouseup", stopDragging);
+            document.addEventListener("touchend", stopDragging);
+        };
+
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                // 移除所有 active 类
+                tabs.forEach((t) => t.classList.remove("active"));
+                panes.forEach((pane) => pane.classList.remove("active"));
+
+                // 获取 data-tab 关联的内容 ID
+                const paneId = tab.dataset.paneid;
+                if (paneId) {
+                    const activePane = document.getElementById(paneId);
+                    if (activePane instanceof HTMLDivElement) {
+                        tab.classList.add("active");
+                        activePane.classList.add("active");
+
+                        // **确保 `setupResizer` 在 `setTimeout` 中执行，确保 DOM 变化后再绑定**
+                        setTimeout(() => {
+                            setupResizer(activePane);
+                        }, 50);
+                    }
+                }
+            });
+        });
+
+        // **初始化第一个 tab**
+        const firstActivePane = document.querySelector(".tab-pane.active") as HTMLDivElement | null;
+        if (firstActivePane) {
+            setupResizer(firstActivePane);
+        }
+    });
+</script>

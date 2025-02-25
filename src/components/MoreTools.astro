@@ -1,0 +1,141 @@
+---
+import moreToolsTitle from "../assets/images/moreToolsTitle.png";
+import commingsoon from "../assets/commingsoon.svg";
+---
+
+<section class="sectionContainer moreTools">
+    <section class="title">
+        <img src={moreToolsTitle.src} alt="" class="textTitle" style="margin-top: 0;" />
+    </section>
+    <section class="tool-cards-group">
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-screenshot-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>截图翻译</h2>
+                <p>用户只需截取包含文字的图片，系统自动识别并翻译，无需手动输入文字，高效便捷。</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-pdf-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>PDF翻译</h2>
+                <p>对包含文本的PDF文档（如报告、学术文章等），mTranslator可以准确提取文本并进行翻译。</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-docx-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>DOCX翻译</h2>
+                <p>无需逐段复制粘贴，一次性翻译整个文档，节省了大量时间，尤其适用于长篇文章、报告或书籍。</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-epub-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>EPUB翻译</h2>
+                <p>高效翻译，使得跨语言的电子出版物传播更加便捷，为全球用户提供了更好的阅读体验。</p>
+            </div>
+        </section>
+    </section>
+</section>
+
+<style>
+    .moreTools {
+        width: 100%;
+        height: 757px;
+        background: linear-gradient(180deg, #fcfcff 0%, #fdfcff 33%, #f0ebfd 100%);
+        border-radius: 0px 0px 0px 0px;
+    }
+    .tool-cards-group {
+        margin-top: 109px;
+        display: flex;
+        gap: 31px;
+    }
+    .tool-card {
+        width: 328px;
+        height: 250px;
+        background: #ffffff;
+        border-radius: 8px 8px 8px 8px;
+        border: 1px solid #e3e3e3;
+    }
+
+    .icon-bg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 59px;
+        height: 59px;
+        margin-top: 25px;
+        margin-left: 20px;
+        background: #fafafa;
+        border: 1px solid #e3e3e3;
+        border-radius: 50%;
+    }
+
+    .icon-bg span {
+        font-size: 30px;
+    }
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        height: 100px;
+    }
+    .comming {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        right: 0;
+    }
+    .intro-content {
+        width: 280px;
+        margin-left: 20px;
+    }
+    .intro-content h2 {
+        color: #12141d;
+        line-height: 28px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        margin: 10px 0;
+    }
+    .intro-content p {
+        color: #8a8a8a;
+        line-height: 22px;
+    }
+    .tool-card:hover {
+        background-color: #7c3aed;
+        color: #7c3aed;
+        transition: color 0.1s ease;
+    }
+
+    .tool-card:hover .intro-content h2 {
+        color: #ffffff;
+    }
+    .tool-card:hover .intro-content p {
+        color: #dddddd;
+    }
+    .tool-card:hover .comming {
+        display: none;
+        transition: color 0.1s ease;
+    }
+</style>

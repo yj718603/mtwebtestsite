@@ -1,0 +1,114 @@
+---
+import mTranslatorLogo from "../assets/Logo.svg";
+import noDark from "../assets/noDark.svg";
+import hoverNoDark from "../assets/noDark_hover.svg";
+import global from "../assets/global.svg";
+import textTranslate from "../assets/textTranslate.svg";
+import hoverTextTranslate from "../assets/textTranslate_hover.svg";
+
+import vector from "../assets/Vector.svg";
+import "../styles/navbar.css";
+import LanguagesDropdown from "./LanguagesDropdown.astro";
+import { supportedLangs } from "../assets/config/supportedLangs.ts";
+
+const defaultLang = supportedLangs[0] || { code: "zh-Hans", name: "中文（简体）" }; // 默认语言
+const langCodeInCookies = Astro.cookies.get("preferredLanguage"); // 通过 cookis 获取用户设置的语言
+const savedLangCode = langCodeInCookies || defaultLang.code;
+
+// 查找用户语言偏好
+const selectedLang = supportedLangs.find((lang) => lang.code === savedLangCode) || defaultLang;
+---
+
+<script>
+    import textTranslate from "../assets/textTranslate.svg";
+    import hoverTextTranslate from "../assets/textTranslate_hover.svg";
+    import noDark from "../assets/noDark.svg";
+    import hoverNoDark from "../assets/noDark_hover.svg";
+
+    // 定义通用的 hover 逻辑函数
+    function addHoverEffect(elementId: string, normalSrc: string, hoverSrc: string): void {
+        document.addEventListener("DOMContentLoaded", () => {
+            const element = document.getElementById(elementId) as HTMLImageElement | null;
+
+            if (element) {
+                // 绑定鼠标移入事件
+                element.parentElement?.addEventListener("mouseover", () => {
+                    element.src = hoverSrc;
+                });
+
+                // 绑定鼠标移出事件
+                element.parentElement?.addEventListener("mouseout", () => {
+                    element.src = normalSrc;
+                });
+            }
+        });
+    }
+
+    // 应用通用函数
+    addHoverEffect("textTranslateLogo", textTranslate.src, hoverTextTranslate.src);
+    addHoverEffect("noDarkModel", noDark.src, hoverNoDark.src);
+</script>
+
+<div id="nav-web">
+    <div id="nav-left">
+        <img class="logo" src={mTranslatorLogo.src} alt="" />
+        <div class="nav-links">
+            <a href="/">定价</a>
+            <a href="/">下载</a>
+            <a href="/">资源</a>
+        </div>
+    </div>
+
+    <div id="nav-right">
+        <a href="/">
+            <img id="textTranslateLogo" src={textTranslate.src} alt="" />
+        </a>
+        <LanguagesDropdown />
+        <img id="noDarkModel" class="logo" src={noDark.src} alt="" />
+        <button id="loginButton">登录</button>
+    </div>
+</div>
+
+<script>
+    import { supportedLangs } from "../assets/config/supportedLangs.ts";
+
+    (function () {
+        const getLanguagePreference = (): string | null => {
+            const cookies = document.cookie.split("; ").reduce((acc: Record<string, string>, cookie) => {
+                const [key, value] = cookie.split("=");
+                acc[key] = value;
+                return acc;
+            }, {});
+
+            // 获取用户的首选语言代码
+            // 1. 获取 cookie 中保存的语言代码
+            // 2. 如果 cookie 中没有语言代码（可能是用户的客户端禁用了 cookie），则获取 localStorage 中保存的语言代码
+            // 3. 如果 cookie 和 localStorage 中都没有语言代码，则获取用户客户端默认的语言代码
+            // 4. 如果都获取失败，就返回 null
+            return (
+                cookies["preferredLanguage"] || localStorage.getItem("preferredLanguage") || navigator.language || null
+            );
+        };
+
+        // 获取用户保存的语言代码
+        const preferredLangCode = getLanguagePreference();
+
+        console.log("Preferred Language Code:", preferredLangCode);
+
+        if (preferredLangCode) {
+            // 查找当前语言名称
+            // 如果用户首选的语言不在受支持的语言列表中，则默认使用支持语言列表中的第一个语言项
+            const selectedLang = supportedLangs.find((lang) => lang.code === preferredLangCode) || supportedLangs[0];
+
+            // 输出当前选择的语言代码和名称
+            console.log("Restored Language Code:", selectedLang);
+            console.log("Restored Language Name:", selectedLang.name);
+
+            // 修改 DOM 的内容
+            const currentLanguageElement = document.getElementById("current-language");
+            if (currentLanguageElement && selectedLang) {
+                currentLanguageElement.textContent = selectedLang.name;
+            }
+        }
+    })();
+</script>

@@ -1,0 +1,299 @@
+---
+import subtitleTranslatorTitle from "../assets/images/subtitleTranslatorTitle.png";
+import exampleVideo from "../assets/video/example_1920_1080.mp4";
+import phoneBorder from "../assets/images/phoneBorder.png";
+---
+
+<div class="sectionContainer">
+    <section class="title">
+        <img src={subtitleTranslatorTitle.src} alt="" class="textTitle" />
+    </section>
+
+    <section class="sectionContainer" id="videoContainer">
+        <!-- 用于裁剪视频的容器 -->
+        <section class="videoWrapper" id="videoWrapper">
+            <video id="scrollVideo" muted playsinline preload="auto" loop>
+                <source src={exampleVideo} type="video/mp4" />
+                您的浏览器不支持视频播放。
+            </video>
+        </section>
+
+        <!-- 边框区域，与视频完全重合，位于视频之上 -->
+        <section id="framecontainer">
+            <img src={phoneBorder.src} alt="videioBorder" />
+        </section>
+    </section>
+
+    <div class="introContent">
+        <p>
+            使用mTranslator浏览器插件，观看视频时可实现实时字幕翻译，用户可选择多种语言，轻松跨越语言障碍。<br
+            />无论是学习、娱乐，还是国际交流，mTranslator通过视频上下文识别和字幕优化功能，确保字幕翻译的准确性和同步性。
+        </p>
+    </div>
+    <div class="fullsizeLink">
+        <a href="">免费试用</a>
+    </div>
+</div>
+
+<style>
+    .fullsizeContainer {
+        margin-top: 100px;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+    .fullsizeContainer video {
+        width: 100%;
+        object-fit: cover;
+    }
+    .phoneContainer {
+        width: 62.5%;
+        height: 598px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 102px 102px 102px 102px;
+        opacity: 100;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+    }
+    .phoneContainer video {
+        width: 100%;
+        height: 100%;
+        object-fit: scale-down;
+    }
+
+    /* 外层容器统一设置相对定位 */
+    .sectionContainer {
+        position: relative;
+    }
+
+    /* 视频和边框容器 */
+    #videoContainer {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* ====== 裁剪视频的容器 ====== */
+    .videoWrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* 初始 scale 可先保持 1.2，后续用 JS 修改 */
+        transform: translate(-50%, -50%) scale(1.2);
+        transform-origin: center;
+
+        /* 宽高都设为 100%，即与父容器一样大 */
+        width: 100%;
+        height: 95%;
+
+        /* 关键1：溢出隐藏，用于裁剪超出圆角外的视频 */
+        overflow: hidden;
+
+        /* 关键2：给容器加圆角，如果你的手机边框四角弧度是 40px，就写 40px；
+       或者使用 clip-path 进行更精细的裁剪 */
+        border-radius: 100px;
+        transition: transform 0.1s ease-out;
+    }
+
+    /* 视频铺满裁剪容器，并自动裁剪溢出部分 */
+    .videoWrapper video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* 让视频保持全屏铺满裁剪容器 */
+        object-fit: cover;
+        transition: transform 0.1s linear;
+    }
+
+    /* 边框区域：绝对定位，与视频区域完全重合 */
+    #framecontainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 103%;
+        height: 100%;
+        transform: translate(-50%, -50%) scale(1.2);
+        transform-origin: center;
+        z-index: 20; /* 边框在视频上方 */
+        pointer-events: none;
+        transition: transform 0.1s ease-out;
+    }
+    #framecontainer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 如果你的边框 PNG 需要完整撑满容器 */
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 获取 DOM 元素
+        const videoContainer = document.getElementById("videoContainer") as HTMLElement;
+        const videoWrapper = document.getElementById("videoWrapper") as HTMLElement;
+        const video = document.getElementById("scrollVideo") as HTMLVideoElement;
+        const frame = document.getElementById("framecontainer") as HTMLElement;
+
+        // 视频加载后自动播放（确保 video 标签中设置了 muted 与 playsinline）
+        video.addEventListener("loadedmetadata", () => {
+            video.play().catch((err) => console.error("自动播放失败：", err));
+        });
+
+        // 定义初始与目标缩放值
+        const initialScale = 1.2; // 初始状态
+        const finalScale = 0.6; // 缩放完成后的状态
+
+        // 定义动画进度变量（取值 0～1）
+        let targetProgress: number = 0;
+        let currentProgress: number = 0;
+
+        // 锁定状态：一旦触发缩放动画，锁定页面滚动直至动画完成
+        let locked = false;
+
+        // requestAnimationFrame 的句柄
+        let animationFrame: number | null = null;
+
+        // 占位符，用于保持文档流，防止解除 fixed 定位时页面抖动
+        let placeholder: HTMLElement | null = null;
+
+        // 辅助函数：限制数值范围
+        function clamp(value: number, min: number, max: number): number {
+            return Math.max(min, Math.min(value, max));
+        }
+
+        /**
+         * 根据 progress 更新视频裁剪容器和边框的缩放
+         * 计算公式：scale = initialScale - progress * (initialScale - finalScale)
+         */
+        function updateVideoScale(progress: number): void {
+            const scale = initialScale - progress * (initialScale - finalScale);
+            videoWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            frame.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+
+        /**
+         * 使用 requestAnimationFrame 对 currentProgress 进行平滑插值更新
+         */
+        function animateScale(): void {
+            const ease = 0.2; // 提高插值系数，加快动画完成
+            currentProgress += (targetProgress - currentProgress) * ease;
+            updateVideoScale(currentProgress);
+
+            if (Math.abs(targetProgress - currentProgress) > 0.001) {
+                animationFrame = requestAnimationFrame(animateScale);
+            } else {
+                // 动画完成：确保精确到目标值
+                currentProgress = targetProgress;
+                updateVideoScale(currentProgress);
+                if (animationFrame !== null) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+                // 当动画完成（targetProgress 为 0 或 1）时，解除锁定，并恢复 videoContainer 的原定位
+                if (targetProgress === 0 || targetProgress === 1) {
+                    locked = false;
+                    videoContainer.style.position = "relative";
+                    videoContainer.style.top = "";
+                    videoContainer.style.left = "";
+                    videoContainer.style.width = "";
+                    videoContainer.style.height = "";
+                    // 移除占位符，恢复文档流
+                    if (placeholder) {
+                        placeholder.remove();
+                        placeholder = null;
+                    }
+                }
+            }
+        }
+
+        /**
+         * 判断是否满足启动锁定的条件
+         * 向下：当视频容器上边缘 ≤ 0 且当前进度为 0
+         * 向上：当视频容器中心接近视口中心（在一定阈值内）且当前进度为 1
+         */
+        function canLockScroll(direction: "down" | "up"): boolean {
+            const rect = videoContainer.getBoundingClientRect();
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            if (direction === "down") {
+                return rect.top <= 0 && currentProgress === 0;
+            } else {
+                const containerCenter = rect.top + rect.height / 2;
+                const viewportCenter = viewportHeight / 2;
+                const threshold = 50; // 像素级阈值
+                return Math.abs(containerCenter - viewportCenter) <= threshold && currentProgress === 1;
+            }
+        }
+
+        // 移除原先的 scroll 事件处理，避免不断重置动画状态
+
+        /**
+         * wheel 事件处理：
+         * 当视频区域进入视口且满足启动条件时，
+         * 创建占位符、将 videoContainer 改为 fixed 以保证居中，然后启动缩放动画。
+         */
+        window.addEventListener(
+            "wheel",
+            (event: WheelEvent) => {
+                const rect = videoContainer.getBoundingClientRect();
+                // 若视频容器不在视口内，则不处理（允许页面正常滚动）
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    return;
+                }
+
+                // 如果已锁定，则阻止后续滚轮事件，避免不断累加
+                if (locked) {
+                    event.preventDefault();
+                    return;
+                }
+
+                // 检查滚动方向并判断是否满足启动条件
+                if (event.deltaY > 0 && canLockScroll("down")) {
+                    locked = true;
+                    targetProgress = 1;
+                    // 创建占位符，保持原有文档流（仅创建一次）
+                    if (!placeholder) {
+                        placeholder = document.createElement("div");
+                        placeholder.style.width = videoContainer.offsetWidth + "px";
+                        placeholder.style.height = videoContainer.offsetHeight + "px";
+                        videoContainer.parentNode?.insertBefore(placeholder, videoContainer);
+                    }
+                    // 切换为 fixed 定位，保证视频始终居中
+                    videoContainer.style.position = "fixed";
+                    videoContainer.style.top = "0";
+                    videoContainer.style.left = "0";
+                    videoContainer.style.width = "100vw";
+                    videoContainer.style.height = "100vh";
+                    event.preventDefault();
+                    animateScale();
+                    return;
+                }
+                if (event.deltaY < 0 && canLockScroll("up")) {
+                    locked = true;
+                    targetProgress = 0;
+                    if (!placeholder) {
+                        placeholder = document.createElement("div");
+                        placeholder.style.width = videoContainer.offsetWidth + "px";
+                        placeholder.style.height = videoContainer.offsetHeight + "px";
+                        videoContainer.parentNode?.insertBefore(placeholder, videoContainer);
+                    }
+                    videoContainer.style.position = "fixed";
+                    videoContainer.style.top = "0";
+                    videoContainer.style.left = "0";
+                    videoContainer.style.width = "100vw";
+                    videoContainer.style.height = "100vh";
+                    event.preventDefault();
+                    animateScale();
+                    return;
+                }
+            },
+            { passive: false }
+        );
+    });
+</script>

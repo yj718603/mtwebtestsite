@@ -1,0 +1,155 @@
+---
+import global from "../assets/global.svg";
+import vector from "../assets/Vector.svg";
+import { supportedLangs } from "../assets/config/supportedLangs.ts";
+
+const defaultLang = supportedLangs[0] || { code: "zh-Hans", name: "中文（简体）" }; // 默认语言
+const langCodeInCookies = Astro.cookies.get("preferredLanguage"); // 通过 cookis 获取用户设置的语言
+const savedLangCode = langCodeInCookies || defaultLang.code;
+
+// 查找用户语言偏好
+const selectedLang = supportedLangs.find((lang) => lang.code === savedLangCode) || defaultLang;
+---
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 获取 DOM 元素
+        const dropdownMenu = document.querySelector(".dropdown-menu") as HTMLUListElement | null;
+        const currentLanguage = document.getElementById("current-language") as HTMLElement | null;
+
+        if (!dropdownMenu || !currentLanguage) {
+            console.error("Dropdown menu or current language element not found!");
+            return;
+        }
+
+        // 保存语言代码
+        // 现场时将语言代码保存到 cookie 中，如果失败，则保存在 localStorage 中
+        const saveLanguagePreference = (langCode: string) => {
+            try {
+                document.cookie = `preferredLanguage=${langCode}; path=/; max-age=31536000`;
+            } catch (err) {
+                localStorage.setItem("preferredLanguage", langCode);
+            }
+        };
+
+        // 添加点击事件监听器
+        dropdownMenu.addEventListener("click", (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+
+            // 检查是否点击到菜单项
+            if (target.tagName === "LI" && target.hasAttribute("data-langCode")) {
+                const selectedLangCode = target.getAttribute("data-langCode");
+                const selectedLangName = target.textContent?.trim();
+
+                if (selectedLangCode && selectedLangName) {
+                    // 更新当前语言显示
+                    currentLanguage.textContent = selectedLangName;
+
+                    // 输出当前选择的语言代码和名称
+                    console.log("Selected Language Code:", selectedLangCode);
+                    console.log("Selected Language Name:", selectedLangName);
+
+                    // 保存用户选择的代码
+                    saveLanguagePreference(selectedLangCode);
+                }
+            }
+        });
+    });
+</script>
+
+<div class="language-dropdown">
+    <button class="dropdown-toggle">
+        <div class="toggle-left" style="display: flex; align-items: center">
+            <img class="logo" src={global.src} alt="" />
+            <span class="current-language" style="font-weight: 400;">{selectedLang.name}</span>
+        </div>
+        <div class="toggle-right">
+            <span class="icon-Vector" style="font-size: 0.5rem;"></span>
+        </div>
+    </button>
+
+    <ul class="dropdown-menu">
+        {supportedLangs.map((lang) => <li data-langCode={lang.code}> {lang.name}</li>)}
+    </ul>
+</div>
+
+<style>
+    .language-dropdown {
+        position: relative; /* 相对定位用于显示下拉菜单 */
+        display: inline-block;
+        width: 12.5rem;
+        height: 2.75rem;
+        margin-right: 0.8125rem;
+    }
+    .language-dropdown span,
+    .dropdown-menu li {
+        font-size: 1rem;
+    }
+
+    .dropdown-toggle {
+        width: 100%;
+        color: inherit;
+        background-color: #f5f5fa;
+        border-radius: 100px;
+        border: 1px solid #ddd; /* 按钮边框 */
+        padding: 0 0.8rem; /* 按钮内边距 */
+        cursor: pointer; /* 鼠标指针样式 */
+        display: flex; /* 按钮内元素水平排列 */
+        align-items: center; /* 垂直居中 */
+        display: flex;
+        justify-content: space-between;
+        transition:
+            background-color 0.3s,
+            box-shadow 0.3s; /* 添加过渡效果 */
+        max-height: 100%;
+    }
+
+    .dropdown-toggle .logo {
+        width: 1.25rem;
+        margin-left: 0.3125rem;
+        margin-right: 0.625rem;
+    }
+
+    .dropdown-toggle:hover {
+        background-color: #ffffff; /* 鼠标悬停时的背景色 */
+        border: 1px solid #7c3aed;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+        display: none; /* 默认隐藏 */
+        position: absolute; /* 相对于父容器定位 */
+
+        left: 0; /* 左对齐 */
+        background-color: #ffffff; /* 菜单背景色 */
+        border: 1px solid #d9d9d9; /* 菜单边框 */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 添加菜单阴影 */
+        border-radius: 4px; /* 菜单圆角 */
+        min-width: 160px; /* 菜单最小宽度 */
+        list-style: none; /* 去掉列表的默认样式 */
+        padding: 0;
+        margin: 20px 0 0 0; /* 去掉上边距，稍微下移 */
+        z-index: 10; /* 确保菜单在顶层 */
+    }
+
+    .dropdown-menu li {
+        line-height: 1.45rem;
+        padding: 10px 15px; /* 每个选项的内边距 */
+        cursor: pointer; /* 鼠标指针样式 */
+        color: #333; /* 默认文字颜色 */
+        font-size: 1rem; /* 字体大小 */
+        transition:
+            background-color 0.3s,
+            color 0.3s; /* 添加过渡效果 */
+    }
+
+    .dropdown-menu li:hover {
+        background-color: #f5f5f5; /* 鼠标悬停背景色 */
+        color: #7c3aed; /* 鼠标悬停文字颜色 */
+    }
+
+    /* 显示下拉菜单 */
+    .language-dropdown:hover .dropdown-menu {
+        display: block; /* 鼠标悬停时显示菜单 */
+    }
+</style>

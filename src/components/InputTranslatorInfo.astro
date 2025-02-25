@@ -1,0 +1,40 @@
+---
+import inputTranslatorTitle from "../assets/images/inputTranslatorTitle.png";
+import inputTranslator from "../assets/video/inputTranslator.mp4";
+---
+
+<section class="sectionContainer inputTranslator">
+    <section class="title">
+        <img src={inputTranslatorTitle.src} alt="" class="textTitle" />
+    </section>
+    <section class="introContent">
+        <p>
+            无需切换应用，无需额外步骤，让翻译成为输入的一部分。<br
+            />只需在网页输入框或即时聊天中输入文字，连续按下三次空格，即可快速将内容翻译成目标语言。
+        </p>
+    </section>
+    <section class="gifContainer">
+        <video autoplay loop muted playsinline>
+            <source src={inputTranslator} type="video/mp4" />
+        </video>
+    </section>
+</section>
+
+<style>
+    .inputTranslator {
+        background-color: #f5f7fe;
+        margin-top: 50px;
+        height: 1124px;
+    }
+    .gifContainer {
+        height: 675px;
+        margin-bottom: 100px;
+    }
+    .gifContainer video {
+        width: 100%;
+        max-width: 1200px;
+        object-fit: scale-down;
+        box-shadow: 0px 0px 42px 0px rgba(97, 57, 161, 0.25);
+        border-radius: 20px 20px 20px 20px;
+    }
+</style>

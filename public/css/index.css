@@ -1,0 +1,57 @@
+.sectionContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.textTitle {
+    display: block;
+    margin-top: 100px;
+}
+.introContent p {
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: #333333;
+    line-height: 2.25rem;
+    text-align: center;
+    font-style: normal;
+}
+
+.fullsizeLink {
+    background-color: rgba(124, 58, 237, 1);
+    border-radius: 4px;
+    border: none;
+    width: 12.5rem;
+    height: 3.75rem;
+    display: flex; /* 使用 flexbox 布局 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    margin-top: 40px;
+}
+.fullsizeLink a {
+    color: rgba(255, 255, 255, 1);
+    font-size: 1.25rem;
+    font-style: normal;
+    text-decoration: none;
+}
+.fullsizeLink:hover {
+    background-color: rgba(105, 49, 201, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+/* .fullsizeButton {
+    background-color: rgba(124, 58, 237, 1);
+    border-radius: 4px;
+    border: none;
+    width: 12.5rem;
+    height: 3.75rem;
+    color: rgba(255, 255, 2555, 1);
+    font-size: 1.25rem;
+    padding: 1rem 3.75rem;
+    margin: 44px;
+}
+.fullsizeButton:hover {
+    background-color: rgba(105, 49, 201, 1);
+    color: rgba(255, 255, 255, 1);
+} */

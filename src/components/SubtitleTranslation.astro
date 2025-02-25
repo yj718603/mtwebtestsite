@@ -1,0 +1,259 @@
+---
+import subtitleTranslatorTitle from "../assets/images/subtitleTranslatorTitle.png";
+import exampleVideo from "../assets/video/example_1920_1080.mp4";
+import phoneBorder from "../assets/images/phoneBorder.png";
+---
+
+<style>
+    /* 外层容器统一设置相对定位 */
+    .sectionContainer {
+        position: relative;
+    }
+
+    /* 视频和边框容器 */
+    #videoContainer {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* 裁剪视频的容器 */
+    .videoWrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* 初始 scale 为 1.2，后续由滚动脚本动态调整 */
+        transform: translate(-50%, -50%) scale(1.2);
+        transform-origin: center;
+        width: 100%;
+        height: 95%;
+        overflow: hidden;
+        /* 根据实际情况设置圆角 */
+        border-radius: 100px;
+        transition: transform 0.1s ease-out;
+    }
+
+    /* 视频铺满裁剪容器 */
+    .videoWrapper video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.1s linear;
+    }
+
+    /* 边框区域：绝对定位，与视频区域完全重合 */
+    #framecontainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 103%;
+        height: 100%;
+        transform: translate(-50%, -50%) scale(1.2);
+        transform-origin: center;
+        z-index: 20;
+        pointer-events: none;
+        transition: transform 0.1s ease-out;
+    }
+    #framecontainer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* 其他辅助样式 */
+    .title {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .introContent {
+        margin: 20px;
+        text-align: center;
+    }
+    .fullsizeLink {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="sectionContainer">
+    <section class="title">
+        <img src={subtitleTranslatorTitle.src} alt="字幕翻译" class="textTitle" />
+    </section>
+
+    <section class="sectionContainer" id="videoContainer">
+        {/* 裁剪视频的容器 */}
+        <section class="videoWrapper" id="videoWrapper">
+            <video id="scrollVideo" muted playsinline preload="auto" loop>
+                <source src={exampleVideo} type="video/mp4" />
+                您的浏览器不支持视频播放。
+            </video>
+        </section>
+
+        {/* 边框区域，与视频完全重合 */}
+        <section id="framecontainer">
+            <img src={phoneBorder.src} alt="videoBorder" />
+        </section>
+    </section>
+
+    <div class="introContent">
+        <p>
+            使用 mTranslator 浏览器插件，观看视频时可实现实时字幕翻译， 用户可选择多种语言，轻松跨越语言障碍。<br />
+            无论是学习、娱乐，还是国际交流，mTranslator 通过视频上下文识别和字幕优化功能， 确保字幕翻译的准确性和同步性。
+        </p>
+    </div>
+    <div class="fullsizeLink">
+        <a href="#">免费试用</a>
+    </div>
+</div>
+
+<!-- 使用 client:load 确保在浏览器端加载，并用 TypeScript 编写 -->
+<script>
+    // 获取 DOM 元素
+    const videoContainer = document.getElementById("videoContainer") as HTMLElement;
+    const videoWrapper = document.getElementById("videoWrapper") as HTMLElement;
+    const video = document.getElementById("scrollVideo") as HTMLVideoElement;
+    const frame = document.getElementById("framecontainer") as HTMLElement;
+
+    // 视频加载后自动播放（需保证 muted 与 playsInline 属性）
+    video.addEventListener("loadedmetadata", () => {
+        video.play().catch((err) => console.error("自动播放失败：", err));
+    });
+
+    // 定义锁定状态和动画控制变量
+    let locked = false; // 当前是否锁定滚动
+    let targetProgress = 0; // 目标进度：0 表示初始状态，1 表示缩放到目标尺寸
+    let currentProgress = 0; // 当前动画进度
+    let animationFrame: number | null = null;
+    let placeholder: HTMLElement | null = null; // 占位符，保持文档流
+
+    // 辅助函数：限制数值范围（原有代码保持不变）
+    function clamp(value: number, min: number, max: number): number {
+        return Math.max(min, Math.min(value, max));
+    }
+
+    /**
+     * 根据 progress（0～1）计算当前 scale，并更新视频裁剪容器与边框的 transform
+     * 公式：scale = initialScale - progress * (initialScale - finalScale)
+     */
+    function updateVideoScale(progress: number): void {
+        const initialScale = 1.2;
+        const finalScale = 0.6;
+        const scale = initialScale - progress * (initialScale - finalScale);
+        videoWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        frame.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    // 动画函数，使用 requestAnimationFrame 平滑更新进度
+    function animateScale(): void {
+        const ease = 0.2; // 插值系数
+        currentProgress += (targetProgress - currentProgress) * ease;
+        updateVideoScale(currentProgress);
+
+        if (Math.abs(targetProgress - currentProgress) > 0.001) {
+            animationFrame = requestAnimationFrame(animateScale);
+        } else {
+            // 动画完成，确保精确匹配目标值
+            currentProgress = targetProgress;
+            updateVideoScale(currentProgress);
+            if (animationFrame !== null) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            // 动画完成后解除锁定，恢复 videoContainer 原定位并移除占位符
+            if (targetProgress === 0 || targetProgress === 1) {
+                locked = false;
+                videoContainer.style.position = "relative";
+                videoContainer.style.top = "";
+                videoContainer.style.left = "";
+                videoContainer.style.width = "";
+                videoContainer.style.height = "";
+                if (placeholder) {
+                    placeholder.remove();
+                    placeholder = null;
+                }
+            }
+        }
+    }
+
+    // 辅助函数，判断是否满足启动滚动锁定条件
+    function canLockScroll(direction: "down" | "up"): boolean {
+        const rect = videoContainer.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        if (direction === "down") {
+            // 向下滚动：当容器上边缘 ≤ 0 且动画未开始时
+            return rect.top <= 0 && currentProgress === 0;
+        } else {
+            // 向上滚动：当容器中心接近视口中心且动画已完成时
+            const containerCenter = rect.top + rect.height / 2;
+            const viewportCenter = viewportHeight / 2;
+            const threshold = 50; // 像素级阈值
+            return Math.abs(containerCenter - viewportCenter) <= threshold && currentProgress === 1;
+        }
+    }
+
+    // 使用 wheel 事件监听滚轮操作，并在满足条件时锁定滚动
+    window.addEventListener(
+        "wheel",
+        (event: WheelEvent) => {
+            const rect = videoContainer.getBoundingClientRect();
+            // 如果 videoContainer 完全不在视口内，则不处理
+            if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                return;
+            }
+
+            // 如果已锁定，则阻止后续滚轮事件
+            if (locked) {
+                event.preventDefault();
+                return;
+            }
+
+            // 向下滚动时（deltaY > 0）启动锁定并触发缩放动画
+            if (event.deltaY > 0 && canLockScroll("down")) {
+                locked = true;
+                targetProgress = 1;
+                // 新增：创建占位符保持原有文档流
+                if (!placeholder) {
+                    placeholder = document.createElement("div");
+                    placeholder.style.width = videoContainer.offsetWidth + "px";
+                    placeholder.style.height = videoContainer.offsetHeight + "px";
+                    videoContainer.parentNode?.insertBefore(placeholder, videoContainer);
+                }
+                // 修改部分：将 videoContainer 改为 fixed 定位，确保全屏显示
+                videoContainer.style.position = "fixed";
+                videoContainer.style.top = "0";
+                videoContainer.style.left = "0";
+                videoContainer.style.width = "100vw";
+                videoContainer.style.height = "100vh";
+                event.preventDefault();
+                animateScale();
+                return;
+            }
+
+            // 向上滚动时（deltaY < 0）启动锁定并触发恢复动画
+            if (event.deltaY < 0 && canLockScroll("up")) {
+                locked = true;
+                targetProgress = 0;
+                if (!placeholder) {
+                    placeholder = document.createElement("div");
+                    placeholder.style.width = videoContainer.offsetWidth + "px";
+                    placeholder.style.height = videoContainer.offsetHeight + "px";
+                    videoContainer.parentNode?.insertBefore(placeholder, videoContainer);
+                }
+                videoContainer.style.position = "fixed";
+                videoContainer.style.top = "0";
+                videoContainer.style.left = "0";
+                videoContainer.style.width = "100vw";
+                videoContainer.style.height = "100vh";
+                event.preventDefault();
+                animateScale();
+                return;
+            }
+        },
+        { passive: false }
+    );
+</script>
